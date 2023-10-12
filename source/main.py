@@ -27,7 +27,7 @@ conversation = ConversationChain(memory=st.session_state.buffer_memory,prompt=pr
 
 
 # setup UI
-st.subheader("📈StockAI🤖")
+st.subheader("📈StockBot🤖")
 if "messages" not in st.session_state.keys():
     st.session_state.messages = [{"role": "assistant", "content": "Tôi có thể giúp gì cho bạn?"}]
 
