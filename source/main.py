@@ -9,7 +9,7 @@ from langchain.prompts import (
 )
 import streamlit as st
 from utils import *
-from source.apikey import apikey
+from apikey import apikey
 import random, time
 #   python -m streamlit run source/main.py
 
