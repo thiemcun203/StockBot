@@ -2,25 +2,25 @@ from sentence_transformers import SentenceTransformer
 import openai
 import streamlit as st
 from apikey import apikey
-import chromadb
+import pinecone
 
 #add apikey of gpt model
 openai.api_key = apikey
 
 #import vector database
-client = chromadb.Client()
-client = chromadb.PersistentClient(path="vectorizeData")
-news_vectorize_data = client.get_or_create_collection(name='news_vectorize_data')
+pinecone.init(api_key="7e35d994-0165-4d6f-b71d-5ccac86b3bdd", environment="gcp-starter")
+index = pinecone.Index("bkai-model-stockbot")
 
 #vietnamese embedding model
 embedding_model = SentenceTransformer('bkai-foundation-models/vietnamese-bi-encoder')
 
 def find_match(input:str, top_k = 3):
     '''Function returns the top k most relevant news articles from the database given the input query'''
-    input_em = SentenceTransformer('bkai-foundation-models/vietnamese-bi-encoder').encode(input).tolist()
-    results = news_vectorize_data.query(query_embeddings = input_em, 
-                                       n_results = top_k)
-    return (results, results['documents'][0][0] + "\n" + results['documents'][0][1] + "\n" + results['documents'][0][2])
+    input_em = embedding_model.encode(input).tolist()
+    results = index.query(vector = input_em, 
+                                       top_k = top_k,
+                                       include_metadata=True)
+    return (results, results['matches'][0]['metadata']['Splitted Content'] + "\n" + results['matches'][1]['metadata']['Splitted Content'] + "\n" + results['matches'][2]['metadata']['Splitted Content'])
 
 def query_refiner(conversation, query):
     prompt=str(f"Given the following user query and conversation log, formulate a question that would be the most relevant to provide the user with an answer from a knowledge base.\n\nCONVERSATION LOG: \n{conversation}\n\nQuery: {query}\n\nRefined Query:")
@@ -42,12 +42,14 @@ def get_conversation_string():
     return conversation_string
 
 if __name__ == "__main__":
-    results = news_vectorize_data.query(
-    query_embeddings=[SentenceTransformer('bkai-foundation-models/vietnamese-bi-encoder').encode("lãi suất agribank?").tolist()],
-    n_results= 3
+    
+    results = index.query(
+    vector=embedding_model.encode("lãi suất agribank?").tolist(),
+    top_k= 3,
+    include_metadata=True,
     )
     print(f'''Tìm hiểu thêm tại:
-1. {results['metadatas'][0][0]['URL']} 
-2. {results['metadatas'][0][1]['URL']}
-3. {results['metadatas'][0][2]['URL']}''')
+1. {results['matches'][0]['metadata']['URL']} 
+2. {results['matches'][1]['metadata']['URL']}
+3. {results['matches'][2]['metadata']['URL']}''')
     # print(results)

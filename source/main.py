@@ -48,9 +48,9 @@ if st.session_state.messages[-1]["role"] != "assistant":
            
             results, context = find_match(prompt)
             URL = f'''Tìm hiểu thêm tại: 
-1. {results['metadatas'][0][0]['URL']} 
-2. {results['metadatas'][0][1]['URL']} 
-3. {results['metadatas'][0][2]['URL']}'''
+1. {results['matches'][0]['metadata']['URL']} 
+2. {results['matches'][1]['metadata']['URL']}
+3. {results['matches'][2]['metadata']['URL']}'''
 
             # # get response from model GPT
             # time.sleep(0.5)
