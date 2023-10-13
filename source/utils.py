@@ -1,20 +1,18 @@
 from sentence_transformers import SentenceTransformer
 import openai
 import streamlit as st
-from apikey import apikey
-import pinecone
+# from apikey import apikey
 
 #add apikey of gpt model
 # openai.api_key = st.secrets["gpt_apikey"]
 
 #import vector database
-pinecone.init(api_key=st.secrets["pinecone_apikey"], environment="gcp-starter")
-index = pinecone.Index("bkai-model-stockbot")
+
 
 #vietnamese embedding model
 embedding_model = SentenceTransformer('bkai-foundation-models/vietnamese-bi-encoder')
 
-def find_match(input:str, top_k = 3):
+def find_match(input:str,index, top_k = 3):
     '''Function returns the top k most relevant news articles from the database given the input query'''
     input_em = embedding_model.encode(input).tolist()
     results = index.query(vector = input_em, 
@@ -43,13 +41,13 @@ def get_conversation_string():
 
 if __name__ == "__main__":
     
-    results = index.query(
-    vector=embedding_model.encode("lãi suất agribank?").tolist(),
-    top_k= 3,
-    include_metadata=True,
-    )
-    print(f'''Tìm hiểu thêm tại:
-1. {results['matches'][0]['metadata']['URL']} 
-2. {results['matches'][1]['metadata']['URL']}
-3. {results['matches'][2]['metadata']['URL']}''')
-    # print(results)
+#     results = index.query(
+#     vector=embedding_model.encode("lãi suất agribank?").tolist(),
+#     top_k= 3,
+#     include_metadata=True,
+#     )
+#     print(f'''Tìm hiểu thêm tại:
+# 1. {results['matches'][0]['metadata']['URL']} 
+# 2. {results['matches'][1]['metadata']['URL']}
+# 3. {results['matches'][2]['metadata']['URL']}''')
+    print(123)

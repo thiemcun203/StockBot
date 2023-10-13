@@ -11,8 +11,12 @@ import streamlit as st
 from utils import *
 # from apikey import apikey
 import random, time
+import pinecone
 #   python -m streamlit run source/main.py
 
+
+pinecone.init(api_key=st.secrets["pinecone_apikey"], environment="gcp-starter")
+index = pinecone.Index("bkai-model-stockbot")
 # Setup memorize the conversation
 if 'buffer_memory' not in st.session_state:
             st.session_state.buffer_memory=ConversationBufferWindowMemory(k=1,return_messages=True)
@@ -46,7 +50,7 @@ if st.session_state.messages[-1]["role"] != "assistant":
     with st.chat_message("assistant", avatar="🤖"):
         with st.spinner("Thinking..."):
            
-            results, context = find_match(prompt)
+            results, context = find_match(prompt, index)
             URL = f'''Tìm hiểu thêm tại: 
 1. {results['matches'][0]['metadata']['URL']} 
 2. {results['matches'][1]['metadata']['URL']}
