@@ -22,7 +22,7 @@ index = pinecone.Index("bkai-model-stockbot")
 if 'buffer_memory' not in st.session_state:
             st.session_state.buffer_memory=ConversationBufferWindowMemory(k=1,return_messages=True)
 
-system_msg_template = SystemMessagePromptTemplate.from_template(template="""Answer the question in Vietnamese as truthfully as possible using the provided context, 
+system_msg_template = SystemMessagePromptTemplate.from_template(template="""Answer the question in Vietnamese as truthfully as possible using the provided context and do not add "Dựa vào đoạn văn trên" to answer,
 and if the answer is not contained within the text below, say 'Tôi không biết'""")
 human_msg_template = HumanMessagePromptTemplate.from_template(template="{input}")
 prompt_template = ChatPromptTemplate.from_messages([system_msg_template, MessagesPlaceholder(variable_name="history"), human_msg_template])
