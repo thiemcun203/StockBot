@@ -9,7 +9,7 @@ from langchain.prompts import (
 )
 import streamlit as st
 from utils import *
-from apikey import apikey
+# from apikey import apikey
 import random, time
 #   python -m streamlit run source/main.py
 
@@ -22,7 +22,7 @@ and if the answer is not contained within the text below, say 'Tôi không biế
 human_msg_template = HumanMessagePromptTemplate.from_template(template="{input}")
 prompt_template = ChatPromptTemplate.from_messages([system_msg_template, MessagesPlaceholder(variable_name="history"), human_msg_template])
 
-llm = ChatOpenAI(model_name="gpt-3.5-turbo", openai_api_key='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')
+llm = ChatOpenAI(model_name="gpt-3.5-turbo", openai_api_key=st.secrets['gpt_apikey'])
 conversation = ConversationChain(memory=st.session_state.buffer_memory,prompt=prompt_template, llm=llm, verbose=True)
 
 

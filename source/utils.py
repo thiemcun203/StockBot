@@ -5,10 +5,10 @@ from apikey import apikey
 import pinecone
 
 #add apikey of gpt model
-openai.api_key = apikey
+openai.api_key = st.secrets["gpt_apikey"]
 
 #import vector database
-pinecone.init(api_key="7e35d994-0165-4d6f-b71d-5ccac86b3bdd", environment="gcp-starter")
+pinecone.init(api_key=st.secrets["pinecone_apikey"], environment="gcp-starter")
 index = pinecone.Index("bkai-model-stockbot")
 
 #vietnamese embedding model
