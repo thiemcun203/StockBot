@@ -52,16 +52,19 @@ if st.session_state.messages[-1]["role"] != "assistant":
         with st.spinner("Thinking..."):
            
             results, context = find_match(prompt, index)
-            URL = f'''Tìm hiểu thêm tại: 
-1. {results['matches'][0]['metadata']['URL']} 
-2. {results['matches'][1]['metadata']['URL']}
-3. {results['matches'][2]['metadata']['URL']}'''
 
             # # get response from model GPT
             # time.sleep(0.5)
             # response = 'Demo Response ' + str(random.randint(0,100)) + '\n\n' + URL
             output = conversation.predict(input=f"Context:\n {context} \n\n Query:\n{prompt}")
-            response = output if re.search(r'\bTôi không biết\b', output) else output + '\n\n' + URL
+            if re.search(r'\bTôi không biết\b', output):
+                response = output
+            else:
+                URL_lst = set([results['matches'][0]['metadata']['URL'], results['matches'][1]['metadata']['URL'], results['matches'][2]['metadata']['URL']])
+                URL = "Tìm hiểu thêm tại:\n"
+                for i,url in enumerate(URL_lst):
+                    URL += f" {i}. {url}\n"
+                response = output + '\n\n' + URL
             st.write(response) 
     message = {"role": "assistant", "content": response}
     st.session_state.messages.append(message)
