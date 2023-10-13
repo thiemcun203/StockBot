@@ -61,9 +61,9 @@ if st.session_state.messages[-1]["role"] != "assistant":
                 response = output
             else:
                 URL_lst = set([results['matches'][0]['metadata']['URL'], results['matches'][1]['metadata']['URL'], results['matches'][2]['metadata']['URL']])
-                URL = "Tìm hiểu thêm tại:\n"
+                URL = "Tìm hiểu thêm tại: \n\n"
                 for i,url in enumerate(URL_lst):
-                    URL += f" {i}. {url}\n"
+                    URL += f"{i+1}. {url}\n"
                 response = output + '\n\n' + URL
             st.write(response) 
     message = {"role": "assistant", "content": response}
