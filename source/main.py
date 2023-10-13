@@ -22,7 +22,7 @@ and if the answer is not contained within the text below, say 'Tôi không biế
 human_msg_template = HumanMessagePromptTemplate.from_template(template="{input}")
 prompt_template = ChatPromptTemplate.from_messages([system_msg_template, MessagesPlaceholder(variable_name="history"), human_msg_template])
 
-llm = ChatOpenAI(model_name="gpt-3.5-turbo", openai_api_key='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')
+llm = ChatOpenAI(model_name="gpt-3.5-turbo", openai_api_key='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')
 conversation = ConversationChain(memory=st.session_state.buffer_memory,prompt=prompt_template, llm=llm, verbose=True)
 
 
