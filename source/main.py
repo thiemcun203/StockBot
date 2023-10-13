@@ -54,8 +54,8 @@ if st.session_state.messages[-1]["role"] != "assistant":
 
             # # get response from model GPT
             # time.sleep(0.5)
-            response = 'Demo Response ' + str(random.randint(0,100)) + '\n\n' + URL
-            # response = conversation.predict(input=f"Context:\n {context} \n\n Query:\n{prompt}") + '\n\n' + URL
+            # response = 'Demo Response ' + str(random.randint(0,100)) + '\n\n' + URL
+            response = conversation.predict(input=f"Context:\n {context} \n\n Query:\n{prompt}") + '\n\n' + URL
             
             st.write(response) 
     message = {"role": "assistant", "content": response}
