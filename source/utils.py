@@ -1,13 +1,7 @@
 from sentence_transformers import SentenceTransformer
 import openai
 import streamlit as st
-# from apikey import apikey
-
-#add apikey of gpt model
-# openai.api_key = st.secrets["gpt_apikey"]
-
-#import vector database
-
+# openai.api_key = st.secrets["apikeys"]["gpt_apikey"]
 
 #vietnamese embedding model
 embedding_model = SentenceTransformer('bkai-foundation-models/vietnamese-bi-encoder')

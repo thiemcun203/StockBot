@@ -10,19 +10,37 @@ from langchain.prompts import (
 )
 import streamlit as st
 from utils import *
-# from apikey import apikey
 import random, time
 import pinecone
-#   python -m streamlit run source/main.py
+#  python -m streamlit run source/main.py
 
-
+#initialize vector database of news articles
 pinecone.init(api_key=st.secrets["apikeys"]["pinecone_apikey"], environment="gcp-starter")
 index = pinecone.Index("bkai-model-stockbot")
+
+#initialize database for collect user data
+from pymongo.mongo_client import MongoClient
+uri = f'mongodb+srv://{st.secrets["db_username"]}:{st.secrets["db_password"]}@cluster0.wgrmih5.mongodb.net/?retryWrites=true&w=majority'
+
+# Create a new client and connect to the server
+client = MongoClient(uri)
+
+# Send a ping to confirm a successful connection
+try:
+    client.admin.command('ping')
+    print("Pinged your deployment. You successfully connected to MongoDB!")
+except Exception as e:
+    print(e)
+       
+user_db = client.get_database('user_chat')
+records = user_db.collect_user_data
+
+
 # Setup memorize the conversation
 if 'buffer_memory' not in st.session_state:
             st.session_state.buffer_memory=ConversationBufferWindowMemory(k=1,return_messages=True)
 
-system_msg_template = SystemMessagePromptTemplate.from_template(template="""Answer the question in Vietnamese as truthfully as possible using the provided context and do not add "Dựa vào đoạn văn trên" to answer,
+system_msg_template = SystemMessagePromptTemplate.from_template(template="""Answer the question in Vietnamese as truthfully as possible using the provided context,
 and if the answer is not contained within the text below, say 'Tôi không biết'""")
 human_msg_template = HumanMessagePromptTemplate.from_template(template="{input}")
 prompt_template = ChatPromptTemplate.from_messages([system_msg_template, MessagesPlaceholder(variable_name="history"), human_msg_template])
@@ -68,6 +86,17 @@ if st.session_state.messages[-1]["role"] != "assistant":
             st.write(response) 
     message = {"role": "assistant", "content": response}
     st.session_state.messages.append(message)
+    # save user data
+    data = {
+        "timestamp": time.time(), #dt_object = datetime.fromtimestamp(timestamp)
+        "user_message": prompt,
+        "bot_message": output,
+        "context_id":[results['matches'][0]['id'], results['matches'][1]['id'], results['matches'][2]['id']],
+        "like": None,
+        "feedback": None
+    }
+    records.insert_one(data)
+    
 
         
 
