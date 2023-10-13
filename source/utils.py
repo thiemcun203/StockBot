@@ -5,7 +5,7 @@ from apikey import apikey
 import pinecone
 
 #add apikey of gpt model
-openai.api_key = st.secrets["gpt_apikey"]
+# openai.api_key = st.secrets["gpt_apikey"]
 
 #import vector database
 pinecone.init(api_key=st.secrets["pinecone_apikey"], environment="gcp-starter")
@@ -22,15 +22,15 @@ def find_match(input:str, top_k = 3):
                                        include_metadata=True)
     return (results, results['matches'][0]['metadata']['Splitted Content'] + "\n" + results['matches'][1]['metadata']['Splitted Content'] + "\n" + results['matches'][2]['metadata']['Splitted Content'])
 
-def query_refiner(conversation, query):
-    prompt=str(f"Given the following user query and conversation log, formulate a question that would be the most relevant to provide the user with an answer from a knowledge base.\n\nCONVERSATION LOG: \n{conversation}\n\nQuery: {query}\n\nRefined Query:")
-    completion = openai.ChatCompletion.create(
-    model = "gpt-3.5-turbo",
-    messages = [{'role': 'user', 'content': prompt}],
-    max_tokens=1200,
-    temperature = 0)
-    response=completion['choices'][0]['message']['content']
-    return response
+# def query_refiner(conversation, query):
+#     prompt=str(f"Given the following user query and conversation log, formulate a question that would be the most relevant to provide the user with an answer from a knowledge base.\n\nCONVERSATION LOG: \n{conversation}\n\nQuery: {query}\n\nRefined Query:")
+#     completion = openai.ChatCompletion.create(
+#     model = "gpt-3.5-turbo",
+#     messages = [{'role': 'user', 'content': prompt}],
+#     max_tokens=1200,
+#     temperature = 0)
+#     response=completion['choices'][0]['message']['content']
+#     return response
     
 def get_conversation_string():
     '''Concatenates the conversation log into a string'''
