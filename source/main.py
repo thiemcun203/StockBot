@@ -15,7 +15,7 @@ import pinecone
 #   python -m streamlit run source/main.py
 
 
-pinecone.init(api_key=st.secrets["pinecone_apikey"], environment="gcp-starter")
+pinecone.init(api_key=st.secrets["apikeys"]["pinecone_apikey"], environment="gcp-starter")
 index = pinecone.Index("bkai-model-stockbot")
 # Setup memorize the conversation
 if 'buffer_memory' not in st.session_state:
@@ -26,7 +26,7 @@ and if the answer is not contained within the text below, say 'Tôi không biế
 human_msg_template = HumanMessagePromptTemplate.from_template(template="{input}")
 prompt_template = ChatPromptTemplate.from_messages([system_msg_template, MessagesPlaceholder(variable_name="history"), human_msg_template])
 
-llm = ChatOpenAI(model_name="gpt-3.5-turbo", openai_api_key=st.secrets["gpt_apikey"])
+llm = ChatOpenAI(model_name="gpt-3.5-turbo", openai_api_key=st.secrets["apikeys"]["gpt_apikey"])
 conversation = ConversationChain(memory=st.session_state.buffer_memory,prompt=prompt_template, llm=llm, verbose=True)
 
 
