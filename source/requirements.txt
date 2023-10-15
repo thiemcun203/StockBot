@@ -5,4 +5,5 @@ sentence_transformers
 pinecone-client
 openai
 streamlit-feedback
-pymongo
+google
+google-cloud-firestore
